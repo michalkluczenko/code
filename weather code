@@ -1,0 +1,204 @@
+def pie1():
+    global lat
+    global lon
+    global exclude
+    import requests
+    TOKEN2 = "d4bca8a678680fe4b1dc1c8f79c369f0"
+    exclude = "minutely, hourly, alerts"
+    CityName = input("Enter City Name : ")
+    url2 = 'http://api.positionstack.com/v1/forward?access_key={}&query={}'.format(TOKEN2, CityName)
+    res2 = requests.get(url2)
+    data2 = res2.json()
+    lat = data2['data'][0]['latitude']
+    lon = data2['data'][0]['longitude']
+
+
+def pie():
+    list1 = []
+    import requests
+    import matplotlib.pyplot as plt
+    import numpy as np
+    global lat
+    global lon
+    api_key = '547e4e1e7c99ee57e3ed55b51a3085a2'
+    exclude = "minutely,hourly,alerts"
+    url = 'https://api.openweathermap.org/data/3.0/onecall?lat={}&lon={}&exclude={}&appid={}'.format(lat, lon, exclude, api_key)
+    res = requests.get(url)
+    data = res.json()
+    temperature = data['daily'][0]['temp']['day']
+    temperature1 = data['daily'][1]['temp']['day']
+    temperature2 = data['daily'][2]['temp']['day']
+    temperature3 = data['daily'][3]['temp']['day']
+    temperature4 = data['daily'][4]['temp']['day']
+    temperature = temperature - 273.15
+    temperature1 = temperature1 - 273.15
+    temperature2 = temperature2 - 273.15
+    temperature3 = temperature3 - 273.15
+    temperature4 = temperature4 - 273.15
+    list1.append(temperature)
+    list1.append(temperature1)
+    list1.append(temperature2)
+    list1.append(temperature3)
+    list1.append(temperature4)
+    x1 = [26, 27, 28, 29, 30]
+    y1 = [7.4, 2.7, 4.5, 6.9, 5.6]
+    plt.plot(x1, y1, color='red', linestyle='solid', linewidth=1,
+             marker='o', markerfacecolor='red', markersize=5)
+    x2 = [26, 27, 28, 29, 30]
+    y2 = list1
+    plt.plot(x2, y2, color='blue', linestyle='solid', linewidth=1,
+             marker='o', markerfacecolor='blue', markersize=5)
+    plt.xticks(np.arange(min(x1), max(x1) + 1, 1.0))
+    plt.ylim(None)
+    plt.xlim(None)
+
+    plt.xlabel('Date')
+    plt.ylabel('Temperature C')
+    plt.title('Temp graph for the week')
+    plt.savefig('graph.png')
+    import sys
+    import pygame
+    from pygame.locals import (
+        K_ESCAPE,
+        KEYDOWN,
+        QUIT,
+        K_r,
+    )
+    SCREEN_WIDTH = 1000
+    SCREEN_HEIGHT = 600
+    pygame.init()
+    fps = 60
+    fpsClock = pygame.time.Clock()
+    font = pygame.font.SysFont('Arial', 40)
+    objects = []
+
+    class Player(pygame.sprite.Sprite):
+        def __init__(self):
+            super(Player, self).__init__()
+            self.surf = pygame.image.load("graph.png").convert()
+            self.surf.set_colorkey((255, 255, 255),)
+            self.rect = self.surf.get_rect()
+
+    class Button:
+
+        def __init__(self, x, y, width, height, buttonText='Button', onclickFunction=None, onePress=False):
+            self.x = x
+            self.y = y
+            self.width = width
+            self.height = height
+            self.onclickFunction = onclickFunction
+            self.onePress = onePress
+            self.alreadyPressed = False
+            self.fillColors = {
+                'normal': '#ffffff',
+                'hover': '#666666',
+                'pressed': '#333333',
+            }
+            self.buttonSurface = pygame.Surface((self.width, self.height))
+            self.buttonRect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+            self.buttonSurf = font.render(buttonText, True, (20, 20, 20))
+            objects.append(self)
+
+        def process(self):
+            mousePos = pygame.mouse.get_pos()
+            self.buttonSurface.fill(self.fillColors['normal'])
+            if self.buttonRect.collidepoint(mousePos):
+                self.buttonSurface.fill(self.fillColors['hover'])
+                if pygame.mouse.get_pressed(num_buttons=3)[0]:
+                    self.buttonSurface.fill(self.fillColors['pressed'])
+                    if self.onePress:
+                        self.onclickFunction()
+                    elif not self.alreadyPressed:
+                        self.onclickFunction()
+                        self.alreadyPressed = True
+                else:
+                    self.alreadyPressed = False
+            self.buttonSurface.blit(self.buttonSurf, [
+                self.buttonRect.width / 2 - self.buttonSurf.get_rect().width / 2,
+                self.buttonRect.height / 2 - self.buttonSurf.get_rect().height / 2
+            ])
+            screen.blit(self.buttonSurface, self.buttonRect)
+
+    class Button1:
+
+        def __init__(self, x, y, width, height, buttonText='Button', onclickFunction=None, onePress=False):
+            self.x = x
+            self.y = y
+            self.width = width
+            self.height = height
+            self.onclickFunction = onclickFunction
+            self.onePress = onePress
+            self.alreadyPressed = False
+
+            self.fillColors = {
+                'normal': '#ffffff',
+                'hover': '#666666',
+                'pressed': '#333333',
+            }
+            self.buttonSurface = pygame.Surface((self.width, self.height))
+            self.buttonRect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+            self.buttonSurf = font.render(buttonText, True, (20, 20, 20))
+            objects.append(self)
+
+        def process(self):
+            mousePos = pygame.mouse.get_pos()
+            self.buttonSurface.fill(self.fillColors['normal'])
+            if self.buttonRect.collidepoint(mousePos):
+                self.buttonSurface.fill(self.fillColors['hover'])
+                if pygame.mouse.get_pressed(num_buttons=3)[0]:
+                    self.buttonSurface.fill(self.fillColors['pressed'])
+                    if self.onePress:
+                        self.onclickFunction()
+                    elif not self.alreadyPressed:
+                        self.onclickFunction()
+                        self.alreadyPressed = True
+                else:
+                    self.alreadyPressed = False
+            self.buttonSurface.blit(self.buttonSurf, [
+                self.buttonRect.width / 2 - self.buttonSurf.get_rect().width / 2,
+                self.buttonRect.height / 2 - self.buttonSurf.get_rect().height / 2
+            ])
+            screen.blit(self.buttonSurface, self.buttonRect)
+
+    def myFunction():
+        print("refreshed")
+        pie()
+
+    def myFunction1():
+        pie1()
+        pie()
+    Button(580, 30, 420, 100, 'refresh with (r) or this button', myFunction)
+    Button1(580, 130, 420, 100, 'add another location', myFunction1)
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    player = Player()
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(player)
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == K_r:
+                    print("refreshed")
+                    pie()
+                if event.key == K_ESCAPE:
+                    running = False
+            elif event.type == QUIT:
+                running = False
+        screen.fill((255, 255, 255))
+        for entity in all_sprites:
+            screen.blit(entity.surf, entity.rect)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        for object in objects:
+            object.process()
+        pygame.display.flip()
+        fpsClock.tick(fps)
+
+
+pie1()
+pie()
